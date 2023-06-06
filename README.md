@@ -48,13 +48,14 @@ For example:
 }
 ```
 
-### Trivia Schema
-The trivia schema represents the structure of trivia game data stored in the database.
+### Trivia Game Schema
+The trivia game schema represents the structure of a trivia game stored in the database. This schema defines the format of the trivia game data that is persisted in the database.
 - `id`: Unique identifier for the trivia game
 - `title`: Title or name of the trivia game
 - `category`: Category or theme of the trivia game
 - `questions`: Array of trivia questions associated with the game
   - `id`: Unique identifier for the question
+  - `timeLimit`: The time limit, in seconds, for how long the question is available to be answered
   - `text`: Text of the question
   - `options`: Array of possible answer options
   - `correctAnswer`: Index of the correct answer option
@@ -68,12 +69,14 @@ For example:
   questions: [
     {
       id: 'question1',
+      timeLimit: 30,
       text: 'Who directed the movie "Inception"?',
       options: ['Christopher Nolan', 'Martin Scorsese', 'Steven Spielberg', 'Quentin Tarantino'],
       correctAnswer: 0
     },
     {
       id: 'question2',
+      timeLimit: 30,
       text: 'Which actor played the character Iron Man in the Marvel Cinematic Universe?',
       options: ['Robert Downey Jr.', 'Chris Evans', 'Chris Hemsworth', 'Mark Ruffalo'],
       correctAnswer: 0
@@ -82,3 +85,14 @@ For example:
   ]
 }
 ```
+
+### Trivia Session Schema
+The trivia session schema represents the structure of a trivia session that is active and stored locally in memory. This schema defines the format of the trivia session data during the live session when players are connected and playing the game.
+- `id`: Unqiue identifier for the trivia session
+- `triviaGame`: Reference to the trivia game being played (using the Trivia Game Schema)
+- `players`: Array of connected players with their IDs, names, and scores
+  - `id`: Unique identifier for the user
+  - `username`: User's username or display name
+  - `score`: User's current score for the trivia session
+  - `isHost`: A boolean flag indicating whether the user is the host of the trivia session
+  - `isConnected`: A boolean flag indicating whether the user is currently connected to the trivia session
