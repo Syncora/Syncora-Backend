@@ -16,11 +16,16 @@
   - `POST /api/trivia`: Create a new trivia game
   - `GET /api/trivia`: Get a list of active trivia games
   - `GET /api/trivia/:id`: Get trivia game details by ID
-  - `POST /api/trivia/:id/join`: Join an existing trivia game by ID
-  - `POST /api/trivia/:id/join/invite-code`: Join an existing trivia game by invite code
-  - `POST /api/trivia/:id/answer`: Submit an answer for a trivia question
   - `DELETE /api/trivia/:id`: Delete a trivia game and all associated data by ID
-
+- Trivia Session Management:
+  - `POST /api/trivia/:id/start`: Start a trivia session for the specified trivia game ID
+  - `POST /api/trivia/:id/join`: Join an existing trivia session by trivia game ID
+  - `POST /api/trivia/:id/join/invite-code`: Join an existing trivia session by trivia game invite code
+  - `POST /api/trivia/:id/answer`: Submit an answer for the current question in the trivia session
+  - `GET /api/trivia/:id/question`: Get the current question for the trivia session
+  - `GET /api/trivia/:id/scoreboard`: Get the scoreboard for the trivia session
+  - `POST /api/trivia/:id/next`: Move to the next question in the trivia session
+  - `POST /api/trivia/:id/end`: End the trivia session and calculate final scores
 
 ## Authentication
 Syncora-Backend uses JSON Web Tokens (JWT) for user authentication.
@@ -97,63 +102,63 @@ The trivia session schema represents the structure of a trivia session that is a
   - `id`: Unique identifier for the user
   - `username`: User's username or display name
   - `score`: User's current score for the trivia session
-  - `isHost`: A boolean flag indicating whether the user is the host of the trivia session
   - `isConnected`: A boolean flag indicating whether the user is currently connected to the trivia session
 - `isPublic`: A boolean flag indicating whether the trivia game is publicly accessible or requires an invitation code to join
 - `inviteCode`: A unique code or token that can be used to join a private trivia game
 - `createdAt`: A timestamp when the session was created at
 - `startedAt`: A timestamp when the session was started at
 - `endedAt`: A timestamp when the session was ended at
+- `host`: The ID of the user who is hosting the trivia session
+- `hostSocket`: The WebSocket server address for the host user
 
 
 For example:
 
 ```javascript
 {
-  id: 'session123',
-  status: 'ongoing',
-  triviaGame: {
-    id: 'trivia456',
-    title: 'Movie Trivia',
-    category: 'Entertainment',
-    questions: [
+  "id": "session123",
+  "status": "ongoing",
+  "triviaGame": {
+    "id": "trivia456",
+    "title": "Movie Trivia",
+    "category": "Entertainment",
+    "questions": [
       {
-        id: 'question1',
-        timeLimit: 30,
-        text: 'Who directed the movie "Inception"?',
-        options: ['Christopher Nolan', 'Martin Scorsese', 'Steven Spielberg', 'Quentin Tarantino'],
-        correctAnswer: 0
+        "id": "question1",
+        "text": "Who directed the movie \"Inception\"?",
+        "options": ["Christopher Nolan", "Martin Scorsese", "Steven Spielberg", "Quentin Tarantino"],
+        "correctAnswer": 0
       },
       {
-        id: 'question2',
-        timeLimit: 30,
-        text: 'Which actor played the character Iron Man in the Marvel Cinematic Universe?',
-        options: ['Robert Downey Jr.', 'Chris Evans', 'Chris Hemsworth', 'Mark Ruffalo'],
-        correctAnswer: 0
+        "id": "question2",
+        "text": "Which actor played the character Iron Man in the Marvel Cinematic Universe?",
+        "options": ["Robert Downey Jr.", "Chris Evans", "Chris Hemsworth", "Mark Ruffalo"],
+        "correctAnswer": 0
       }
     ]
   },
-  currentQuestionIndex: 1,
-  players: [
+  "currentQuestionIndex": 0,
+  "players": [
     {
-      id: 'player123',
-      username: 'john_doe',
-      score: 10,
-      isHost: true,
-      isConnected: true
+      "id": "user123",
+      "username": "Player1",
+      "score": 0,
+      "isConnected": true
     },
     {
-      id: 'player456',
-      username: 'jane_smith',
-      score: 5,
-      isHost: false,
-      isConnected: true
+      "id": "user456",
+      "username": "Player2",
+      "score": 0,
+      "isConnected": true
     }
   ],
-  isPublic: false,
-  inviteCode: 'ABC123',
-  createdAt: '2023-06-05T12:00:00.000Z',
-  startedAt: '2023-06-05T12:10:00.000Z',
-  endedAt: ''
+  "isPublic": true,
+  "inviteCode": "",
+  "createdAt": "2023-06-05T10:30:00Z",
+  "startedAt": "2023-06-05T10:32:00Z",
+  "endedAt": null,
+  "host": "user123",
+  "hostSocket": "ws://localhost:3000"
 }
+
 ```
