@@ -89,6 +89,7 @@ For example:
 ### Trivia Session Schema
 The trivia session schema represents the structure of a trivia session that is active and stored locally in memory. This schema defines the format of the trivia session data during the live session when players are connected and playing the game.
 - `id`: Unqiue identifier for the trivia session
+- `status`: The current status of the trivia session (e.g., "pending", "ongoing", "paused", "ended")
 - `triviaGame`: Reference to the trivia game being played (using the Trivia Game Schema)
 - `currentQuestionIndex`: The index of the current question being presented in the trivia session
 - `players`: Array of connected players with their IDs, names, and scores
@@ -97,11 +98,16 @@ The trivia session schema represents the structure of a trivia session that is a
   - `score`: User's current score for the trivia session
   - `isHost`: A boolean flag indicating whether the user is the host of the trivia session
   - `isConnected`: A boolean flag indicating whether the user is currently connected to the trivia session
+- `isPublic`: A boolean flag indicating whether the trivia game is publicly accessible or requires an invitation code to join
+- `inviteCode`: A unique code or token that can be used to join a private trivia game
+
+
 For example:
 
 ```javascript
 {
   id: 'session123',
+  status: 'ongoing',
   triviaGame: {
     id: 'trivia456',
     title: 'Movie Trivia',
@@ -137,6 +143,8 @@ For example:
       isHost: false,
       isConnected: true
     }
-  ]
+  ],
+  isPublic: false,
+  inviteCode: 'ABC123'
 }
 ```
