@@ -17,6 +17,7 @@
   - `GET /api/trivia`: Get a list of active trivia games
   - `GET /api/trivia/:id`: Get trivia game details by ID
   - `POST /api/trivia/:id/join`: Join an existing trivia game by ID
+  - `POST /api/trivia/:id/join/invite-code`: Join an existing trivia game by invite code
   - `POST /api/trivia/:id/answer`: Submit an answer for a trivia question
   - `DELETE /api/trivia/:id`: Delete a trivia game and all associated data by ID
 
@@ -100,6 +101,8 @@ The trivia session schema represents the structure of a trivia session that is a
   - `isConnected`: A boolean flag indicating whether the user is currently connected to the trivia session
 - `isPublic`: A boolean flag indicating whether the trivia game is publicly accessible or requires an invitation code to join
 - `inviteCode`: A unique code or token that can be used to join a private trivia game
+- `createdAt`: A timestamp when the session was created at
+- `startedAt`: A timestamp when the session was started at
 
 
 For example:
@@ -115,12 +118,14 @@ For example:
     questions: [
       {
         id: 'question1',
+        timeLimit: 30,
         text: 'Who directed the movie "Inception"?',
         options: ['Christopher Nolan', 'Martin Scorsese', 'Steven Spielberg', 'Quentin Tarantino'],
         correctAnswer: 0
       },
       {
         id: 'question2',
+        timeLimit: 30,
         text: 'Which actor played the character Iron Man in the Marvel Cinematic Universe?',
         options: ['Robert Downey Jr.', 'Chris Evans', 'Chris Hemsworth', 'Mark Ruffalo'],
         correctAnswer: 0
@@ -146,5 +151,7 @@ For example:
   ],
   isPublic: false,
   inviteCode: 'ABC123'
+  createdAt: '2023-06-05T12:00:00.000Z',
+  startedAt: '2023-06-05T12:10:00.000Z'
 }
 ```
