@@ -97,3 +97,46 @@ The trivia session schema represents the structure of a trivia session that is a
   - `score`: User's current score for the trivia session
   - `isHost`: A boolean flag indicating whether the user is the host of the trivia session
   - `isConnected`: A boolean flag indicating whether the user is currently connected to the trivia session
+For example:
+
+```javascript
+{
+  id: 'session123',
+  triviaGame: {
+    id: 'trivia456',
+    title: 'Movie Trivia',
+    category: 'Entertainment',
+    questions: [
+      {
+        id: 'question1',
+        text: 'Who directed the movie "Inception"?',
+        options: ['Christopher Nolan', 'Martin Scorsese', 'Steven Spielberg', 'Quentin Tarantino'],
+        correctAnswer: 0
+      },
+      {
+        id: 'question2',
+        text: 'Which actor played the character Iron Man in the Marvel Cinematic Universe?',
+        options: ['Robert Downey Jr.', 'Chris Evans', 'Chris Hemsworth', 'Mark Ruffalo'],
+        correctAnswer: 0
+      }
+    ]
+  },
+  currentQuestionIndex: 1,
+  players: [
+    {
+      id: 'player123',
+      username: 'john_doe',
+      score: 10,
+      isHost: true,
+      isConnected: true
+    },
+    {
+      id: 'player456',
+      username: 'jane_smith',
+      score: 5,
+      isHost: false,
+      isConnected: true
+    }
+  ]
+}
+```
