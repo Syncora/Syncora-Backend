@@ -103,6 +103,7 @@ The trivia session schema represents the structure of a trivia session that is a
 - `inviteCode`: A unique code or token that can be used to join a private trivia game
 - `createdAt`: A timestamp when the session was created at
 - `startedAt`: A timestamp when the session was started at
+- `endedAt`: A timestamp when the session was ended at
 
 
 For example:
