@@ -90,6 +90,7 @@ For example:
 The trivia session schema represents the structure of a trivia session that is active and stored locally in memory. This schema defines the format of the trivia session data during the live session when players are connected and playing the game.
 - `id`: Unqiue identifier for the trivia session
 - `triviaGame`: Reference to the trivia game being played (using the Trivia Game Schema)
+- `currentQuestionIndex`: The index of the current question being presented in the trivia session
 - `players`: Array of connected players with their IDs, names, and scores
   - `id`: Unique identifier for the user
   - `username`: User's username or display name
