@@ -150,8 +150,9 @@ For example:
     }
   ],
   isPublic: false,
-  inviteCode: 'ABC123'
+  inviteCode: 'ABC123',
   createdAt: '2023-06-05T12:00:00.000Z',
-  startedAt: '2023-06-05T12:10:00.000Z'
+  startedAt: '2023-06-05T12:10:00.000Z',
+  endedAt: ''
 }
 ```
