@@ -33,8 +33,9 @@ Syncora-Backend uses JSON Web Tokens (JWT) for user authentication.
 
 ## Database Schema
 ### User Schema
-The user schema represents the structure of user data stored in the database.
+The user schema represents the structure of user data stored in the database. Note that a user can create and host a trivia game, while a guest can only join.
 - `id`: Unique identifier for the user
+- `type`: Whether its a user or guest
 - `username`: User's username or display name
 - `password`: Encrypted password for authentication
 - `createdAt`: Timestamp for when the user account was created
@@ -46,12 +47,27 @@ For example:
 ```javascript
 {
   id: 'user123',
+  type: 'user',
   username: 'john_doe',
   password: 'hashedPassword123',
   createdAt: '2023-06-01T10:00:00.000Z',
   updatedAt: '2023-06-03T15:30:00.000Z',
   avatar: 'path/to/avatar',
   ownedTrivias: ['c769a982-8d43-4a36-a2b6-3c8c1e3f6b99', '61e09a25-6c23-48ed-8f41-2ff2fd045dc7', '2e7f3c34-79c2-4939-8e72-b2397dd5a48d']
+}
+```
+
+### Guest Schema
+The guest schema represents the structure of guest data temporarily stored. Note that a user can create and host a trivia game, while a guest can only join.
+- `id`: Unique identifier for the guest
+- `type`: Whether its a user or guest
+- `username`: Guest's display name
+For example:
+```javascript
+{
+  id: 'guest123',
+  type: 'guest',
+  username: 'john_doe'
 }
 ```
 
