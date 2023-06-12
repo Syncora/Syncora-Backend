@@ -8,9 +8,9 @@
 
 ## API Endpoints
 - User Management:
-  - `POST /api/users`: Register a new user
-  - `POST /api/login`: Authenticate a user and generate an access token
-  - `GET /api/users/:id`: Get user profile by ID
+  - `POST /api/users`: Register a new user or create a guest user if no credentials are provided.
+  - `POST /api/login`: Authenticate a user and generate an access token. For guest users, a temporary access token can be generated without requiring any credentials.
+  - `GET /api/users/:id`: Get user profile by ID. This endpoint can return user details for registered users and generic details for guest users.
 
 - Trivia Management:
   - `POST /api/trivia`: Create a new trivia game
@@ -26,6 +26,7 @@
   - `GET /api/trivia/:id/scoreboard`: Get the scoreboard for the trivia session
   - `POST /api/trivia/:id/next`: Move to the next question in the trivia session
   - `POST /api/trivia/:id/end`: End the trivia session and calculate final scores
+
 
 ## Authentication
 Syncora-Backend uses JSON Web Tokens (JWT) for user authentication.
@@ -147,7 +148,7 @@ For example:
     },
     {
       "id": "user456",
-      "username": "Player2",
+      "username": "Guest1",
       "score": 0,
       "isConnected": true
     }
