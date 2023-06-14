@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/userSchema');
+const hashPassword = require('../utils/hashPassword');
 
 // POST /api/user
 router.post('/', async (req, res) => {
@@ -8,7 +9,6 @@ router.post('/', async (req, res) => {
         Register a new user or create a guest
 
         TODO:
-            - Hash password for user
             - Generate temp password for guest
     */
     const { type, ...Credentials } = req.body;
@@ -27,10 +27,10 @@ router.post('/', async (req, res) => {
 
     if (type === 'guest') {
         const { username } = Credentials;
+
         user.$set({ type, username });
 
-        // Generate temp password for guest account?
-        res.status(200).send(user);
+        res.status(200).send();
         return;
     }
 
@@ -40,10 +40,11 @@ router.post('/', async (req, res) => {
     }
 
     const { username, password } = Credentials;
+    const hashedPassword = hashPassword(password);
 
-    user.$set({ type, username, password });
+    user.$set({ type, username, password: hashedPassword });
 
-    res.status(200).send(user);
+    res.status(200).send();
 })
 
 module.exports = router;
