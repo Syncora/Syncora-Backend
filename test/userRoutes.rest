@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:8080
+
+### Register a user (not guest)
+# @name registerUser
+POST {{baseUrl}}/api/user HTTP/1.1
+Content-Type: application/json
+
+{
+    "type": "user",
+    "username": "Hey",
+    "password": "LOL"
+}
