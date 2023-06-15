@@ -3,18 +3,15 @@ const router = express.Router();
 const User = require('../models/userSchema');
 const hashPassword = require('../utils/hashPassword');
 
-// POST /api/user
+// POST /api/user?type=guest/user
 router.post('/', async (req, res) => {
     /* 
         Register a new user or create a guest
-
-        TODO:
-            - Generate temp password for guest
     */
-    const { type, ...Credentials } = req.body;
+    const type = req.query.type;
 
-    if (typeof type != 'string') {
-        res.status(400).json({ error: 'Invalid user type.' });
+    if (!type) {
+        res.status(400).json({ error: 'Invalid query. No "type" query provided.' });
         return;
     }
 
@@ -23,10 +20,11 @@ router.post('/', async (req, res) => {
         return;
     }
 
+    const { ...credentials } = req.body;
     const user = new User();
 
     if (type === 'guest') {
-        const { username } = Credentials;
+        const { username } = credentials;
 
         user.$set({ type, username });
 
@@ -34,12 +32,12 @@ router.post('/', async (req, res) => {
         return;
     }
 
-    if (!Credentials || typeof Credentials !== 'object' || Object.keys(Credentials).length === 0) {
+    if (!credentials || typeof credentials !== 'object' || Object.keys(credentials).length === 0) {
         res.status(400).json({ error: 'Invalid credentials provided.' });
         return;
     }
 
-    const { username, password } = Credentials;
+    const { username, password } = credentials;
     const hashedPassword = hashPassword(password);
 
     user.$set({ type, username, password: hashedPassword });
