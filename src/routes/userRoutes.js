@@ -2,9 +2,32 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/userSchema');
 const hashPassword = require('../utils/hashPassword');
+const jwtHelper = require('../utils/jwtHelper');
 
-// POST /api/user?type=guest/user
-router.post('/', async (req, res) => {
+// POST /api/user/login
+router.post('/login', async (req, res) => {
+    /* 
+        Login a user
+    */
+    const { username, password } = req.body;
+
+    // TODO: Validate username,password
+
+    const tokenPayload = {
+        'subject': username,
+        'audience': 'user'
+    };
+
+    const token = jwtHelper.generateToken(tokenPayload);
+
+    // Send the token in the Authorization header
+    res.set('Authorization', `Bearer ${token}`);
+
+    res.status(200).json({});
+});
+
+// POST /api/user/register?type=guest/user
+router.post('/register', async (req, res) => {
     /* 
         Register a new user or create a guest
     */
@@ -28,7 +51,17 @@ router.post('/', async (req, res) => {
 
         user.$set({ type, username });
 
-        res.status(200).send();
+        const tokenPayload = {
+            'subject': username,
+            'audience': 'guest'
+        };
+
+        const token = jwtHelper.generateToken(tokenPayload);
+
+        // Send the token in the Authorization header
+        res.set('Authorization', `Bearer ${token}`);
+
+        res.status(200).json({ message: 'Guest registration successful.' });
         return;
     }
 
@@ -42,7 +75,8 @@ router.post('/', async (req, res) => {
 
     user.$set({ type, username, password: hashedPassword });
 
-    res.status(200).send();
+    res.status(200).json({ message: 'User registration successful.' });
+    return;
 })
 
 module.exports = router;
