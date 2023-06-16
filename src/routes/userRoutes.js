@@ -20,8 +20,8 @@ router.post('/login', async (req, res) => {
 
     const token = jwtHelper.generateToken(tokenPayload);
 
-    // Send the token in the Authorization header
-    res.set('Authorization', `Bearer ${token}`);
+    // Set the token as a cookie
+    res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true })
 
     res.status(200).json({});
 });
@@ -58,8 +58,8 @@ router.post('/register', async (req, res) => {
 
         const token = jwtHelper.generateToken(tokenPayload);
 
-        // Send the token in the Authorization header
-        res.set('Authorization', `Bearer ${token}`);
+        // Set the token as a cookie
+        res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true })
 
         res.status(200).json({ message: 'Guest registration successful.' });
         return;
