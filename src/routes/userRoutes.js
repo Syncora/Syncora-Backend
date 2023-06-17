@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/userSchema');
+const User = require('../models/user');
+const Guest = require('../models/guest');
 const hashPassword = require('../utils/hashPassword');
 const jwtHelper = require('../utils/jwtHelper');
+const { v4: uuidv4 } = require('uuid');
 
 // POST /api/user/login
 router.post('/login', async (req, res) => {
@@ -34,49 +36,50 @@ router.post('/register', async (req, res) => {
     const type = req.query.type;
 
     if (!type) {
-        res.status(400).json({ error: 'Invalid query. No "type" query provided.' });
-        return;
+        return res.status(400).json({ error: 'Invalid query. No "type" query provided.' });
     }
 
     if (type !== 'guest' && type !== 'user') {
-        res.status(400).json({ error: 'Invalid user type. Must be "guest" or "user".' });
-        return;
+        return res.status(400).json({ error: 'Invalid user type. Must be "guest" or "user".' });
     }
 
     const { ...credentials } = req.body;
-    const user = new User();
 
-    if (type === 'guest') {
-        const { username } = credentials;
+    try {
+        if (type === 'guest') {
+            const { username } = credentials;
+            const guest = new Guest({ uuid: uuidv4(), type: 'guest', username });
+            await guest.register();
 
-        user.$set({ type, username });
+            const token = jwtHelper.generateToken(guest.data);
 
-        const tokenPayload = {
-            'subject': username,
-            'audience': 'guest'
-        };
+            // Set the token as a cookie
+            res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true });
 
-        const token = jwtHelper.generateToken(tokenPayload);
+            return res.status(200).json({ message: 'Guest registration successful.' });
+        }
 
-        // Set the token as a cookie
-        res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true })
+        if (!credentials || typeof credentials !== 'object' || Object.keys(credentials).length === 0) {
+            return res.status(400).json({ error: 'Invalid credentials provided.' });
+        }
 
-        res.status(200).json({ message: 'Guest registration successful.' });
-        return;
+        const { username, password } = credentials;
+        const hashedPassword = hashPassword(password);
+
+        const user = new User({ uuid: uuidv4(), type: 'user', username, password: hashedPassword });
+        await user.register();
+
+        return res.status(200).json({ message: 'User registration successful.' });
+
+    } catch (error) {
+        // Registration failed, handle the error
+        if (error.statusCode === 409) {
+            return res.status(409).json({ error: error.message });
+        }
+        // Handle other error cases
+        return res.status(500).json({ error: 'An internal server error occurred.' });
     }
+});
 
-    if (!credentials || typeof credentials !== 'object' || Object.keys(credentials).length === 0) {
-        res.status(400).json({ error: 'Invalid credentials provided.' });
-        return;
-    }
-
-    const { username, password } = credentials;
-    const hashedPassword = hashPassword(password);
-
-    user.$set({ type, username, password: hashedPassword });
-
-    res.status(200).json({ message: 'User registration successful.' });
-    return;
-})
 
 module.exports = router;
