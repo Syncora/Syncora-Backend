@@ -2,6 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
+require('./database/connection.js');
+require('./database/setup.js');
+require('./database/tables/setup.js');
+
 var corsOptions = {
     origin: '*',
     credentials: true
