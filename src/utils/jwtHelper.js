@@ -5,17 +5,18 @@ if (!secretKey || secretKey === undefined) {
     throw new Error('JWT secret key not found!');
 };
 
-function generateToken(payload, options) {
+function generateToken(data) {
+
     const tokenOptions = {
-        expiresIn: '1h',
-        ...options
+        expiresIn: '1h'
     };
 
     const tokenPayload = {
-        sub: payload.subject,
-        aud: payload.audience,
+        sub: data.uuid,
+        name: data.username,
+        aud: data.type,
         iss: 'Syncora',
-        ...payload
+        iat: Date.now(),
     };
 
     return jwt.sign(tokenPayload, secretKey, tokenOptions);
