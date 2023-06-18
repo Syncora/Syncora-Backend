@@ -11,21 +11,28 @@ router.post('/login', async (req, res) => {
     /* 
         Login a user
     */
+
     const { username, password } = req.body;
 
-    // TODO: Validate username,password
+    try {
+        const user = await User.findByUsername(username);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found. ' });
+        }
 
-    const tokenPayload = {
-        'subject': username,
-        'audience': 'user'
-    };
+        const passwordMatch = await user.verifyPassword(password);
+        if (!passwordMatch) {
+            return res.status(401).json({ error: 'Incorrect password.' });
+        }
 
-    const token = jwtHelper.generateToken(tokenPayload);
+        const token = jwtHelper.generateToken(user);
+        // Set the token as a cookie
+        res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true });
 
-    // Set the token as a cookie
-    res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true })
-
-    res.status(200).json({});
+        res.status(200).json({ message: 'Login successful.' });
+    } catch (error) {
+        return res.status(error.statusCode).json({ error: error.message });
+    }
 });
 
 // POST /api/user/register?type=guest/user
@@ -65,7 +72,10 @@ router.post('/register', async (req, res) => {
         }
 
         const { username, password } = credentials;
-        const hashedPassword = hashPassword(password);
+        await User.validateUsernameInput(username);
+        await User.validatePasswordInput(password);
+
+        const hashedPassword = await hashPassword(password);
         const user = new User({ uuid: uuidv4(), type: 'user', username, password: hashedPassword });
 
         await user.register();
