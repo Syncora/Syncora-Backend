@@ -49,9 +49,10 @@ router.post('/register', async (req, res) => {
         if (type === 'guest') {
             const { username } = credentials;
             const guest = new Guest({ uuid: uuidv4(), type: 'guest', username });
+
             await guest.register();
 
-            const token = jwtHelper.generateToken(guest.data);
+            const token = jwtHelper.generateToken(guest);
 
             // Set the token as a cookie
             res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true });
@@ -65,19 +66,14 @@ router.post('/register', async (req, res) => {
 
         const { username, password } = credentials;
         const hashedPassword = hashPassword(password);
-
         const user = new User({ uuid: uuidv4(), type: 'user', username, password: hashedPassword });
+
         await user.register();
 
         return res.status(200).json({ message: 'User registration successful.' });
 
     } catch (error) {
-        // Registration failed, handle the error
-        if (error.statusCode === 409) {
-            return res.status(409).json({ error: error.message });
-        }
-        // Handle other error cases
-        return res.status(500).json({ error: 'An internal server error occurred.' });
+        return res.status(error.statusCode).json({ error: error.message });
     }
 });
 
