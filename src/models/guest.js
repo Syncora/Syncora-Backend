@@ -17,9 +17,9 @@ class Guest {
             return;
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
-                throw { statusCode: 409, message: 'The provided username is already in use.' };
+                throw { statusCode: 409, message: error.sqlMessage };
             } else {
-                throw { statusCode: 500, message: 'An error occurred while registering the guest.' };
+                throw { statusCode: 500, message: error.sqlMessage };
             }
         }
     }
