@@ -1,4 +1,4 @@
-const dbPool = require('../connection.js');
+const dbPool = require('../connection');
 
 const createTable = (connection, tableName, tableDefinition) => {
     return new Promise((resolve, reject) => {

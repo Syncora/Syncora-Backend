@@ -1,4 +1,4 @@
-const dbPool = require('./connection.js');
+const dbPool = require('./connection');
 
 // Create the databases
 const createDatabases = async () => {
