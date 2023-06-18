@@ -1,41 +1,27 @@
-const mysql = require('mysql');
-
-// Create a connection pool
-const pool = mysql.createPool({
-    host: process.env.SQL_HOST,
-    user: process.env.SQL_USERNAME,
-    password: process.env.SQL_PASSWORD,
-    database: 'credentials',
-});
+const { query } = require('../database/utils/postQuery');
 
 class Guest {
-    constructor(data) {
-        this.data = data;
+    constructor(guestData) {
+        this.uuid = guestData.uuid;
+        this.type = guestData.type;
+        this.username = guestData.username;
     }
 
-    register() {
-        return new Promise((resolve, reject) => {
-            const guest = this.data;
+    async register() {
+        const queryStr = 'INSERT INTO guest_profiles (uuid, type, username) VALUES (?, ?, ?)';
+        const values = [this.uuid, this.type, this.username];
 
-            const query = `INSERT INTO guest_profiles (uuid, type, username)
-                           VALUES (?, ?, ?)`;
-
-            const values = [
-                guest.uuid,
-                guest.type,
-                guest.username,
-            ];
-
-            pool.query(query, values, (error, results) => {
-                if (error && error.code === 'ER_DUP_ENTRY') {
-                    reject({ statusCode: 409, message: 'The provided username is already in use.' });
-                    return;
-                }
-
-                console.log('Guest registered successfully');
-                resolve('Guest registered successfully');
-            });
-        });
+        try {
+            await query(queryStr, values);
+            console.log('Guest registered successfully');
+            return;
+        } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                throw { statusCode: 409, message: 'The provided username is already in use.' };
+            } else {
+                throw { statusCode: 500, message: 'An error occurred while registering the guest.' };
+            }
+        }
     }
 }
 
