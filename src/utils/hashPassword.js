@@ -1,18 +1,22 @@
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const hashKey = process.env.HASH_KEY;
+const saltRounds = process.env.SALT_ROUNDS;
 
-if (!hashKey || hashKey === undefined) {
-    throw new Error('Hash key not found!');
+if (!hashKey || hashKey === undefined || !saltRounds || saltRounds === undefined) {
+    throw new Error('Missing required environment variables for hashing password!');
 };
 
-function hashPassword(password) {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.createHash('sha256');
+async function hashPassword(password) {
+    try {
+        const salt = await bcrypt.genSalt(parseInt(saltRounds));
 
-    const stringToBeHashed = password + hashKey + salt;
-    const hashedPassword = hash.update(stringToBeHashed).digest('hex');
+        const stringToBeHashed = password + hashKey;
+        const hashedPassword = await bcrypt.hash(stringToBeHashed, salt);
 
-    return `${hashedPassword}%${salt}`;
+        return hashedPassword;
+    } catch (error) {
+        throw { statusCode: 500, message: 'An error occurred while hashing the password.' };
+    }
 }
 
 module.exports = hashPassword;
