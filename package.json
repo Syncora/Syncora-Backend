@@ -1,0 +1,32 @@
+{
+  "name": "syncora-backend",
+  "version": "1.0.0",
+  "description": "- Node.js: JavaScript runtime environment\r - Express.js: Web application framework for building APIs\r - TBD: Database management system (e.g., MongoDB, PostgreSQL, MySQL)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Syncora/Syncora-Backend.git"
+  },
+  "author": "https://github.com/Frier03",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Syncora/Syncora-Backend/issues"
+  },
+  "homepage": "https://github.com/Syncora/Syncora-Backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "crypto-random-string": "^5.0.0",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.2.2",
+    "mysql": "^2.18.1",
+    "socket.io": "^4.6.2"
+  }
+}

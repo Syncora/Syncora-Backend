@@ -8,9 +8,9 @@
 
 ## API Endpoints
 - User Management:
-  - `POST /api/users`: Register a new user or create a guest user if no credentials are provided.
+  - `POST /api/user`: Register a new user or create a guest user if no credentials are provided.
   - `POST /api/login`: Authenticate a user and generate an access token. For guest users, a temporary access token can be generated without requiring any credentials.
-  - `GET /api/users/:id`: Get user profile by ID. This endpoint can return user details for registered users and generic details for guest users.
+  - `GET /api/user/:id`: Get user profile by ID. This endpoint can return user details for registered users and generic details for guest users.
 
 - Trivia Management:
   - `POST /api/trivia`: Create a new trivia game
