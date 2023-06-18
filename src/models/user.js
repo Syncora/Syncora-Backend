@@ -1,5 +1,4 @@
 const { query } = require('../database/utils/postQuery');
-const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 
 class User {
