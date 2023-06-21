@@ -3,8 +3,7 @@ class TriviaGame {
         this.id = triviaGameData.id
         this.title = triviaGameData.title
         this.category = triviaGameData.category
-        this.questions =
-        {
+        this.questions = {
             timeLimit: triviaGameData.timeLimit,
             question: triviaGameData.question,
             options: triviaGameData.options,
