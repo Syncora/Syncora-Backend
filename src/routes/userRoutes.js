@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
-const Guest = require('../models/guest');
 const hashPassword = require('../utils/hashPassword');
 const jwtHelper = require('../utils/jwtHelper');
 const { v4: uuidv4 } = require('uuid');
+
+const User = require('../models/userModel');
+const Guest = require('../models/guestModel');
 
 // POST /api/user/login
 router.post('/login', async (req, res) => {
@@ -26,6 +27,7 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwtHelper.generateToken(user);
+
         // Set the token as a cookie
         res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true });
 

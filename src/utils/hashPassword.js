@@ -3,7 +3,7 @@ const hashKey = process.env.HASH_KEY;
 const saltRounds = process.env.SALT_ROUNDS;
 
 if (!hashKey || hashKey === undefined || !saltRounds || saltRounds === undefined) {
-    throw new Error('Missing required environment variables for hashing password!');
+    throw new Error('Missing required environment variables for hashing password or salting!');
 };
 
 async function hashPassword(password) {
