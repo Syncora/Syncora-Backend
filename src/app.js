@@ -10,9 +10,9 @@ var corsOptions = {
     origin: '*',
     credentials: true
 };
-app.use(cors(corsOptions));
 
 // Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
