@@ -26,6 +26,7 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwtHelper.generateToken(user);
+
         // Set the token as a cookie
         res.cookie('auth_token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, secure: true });
 
