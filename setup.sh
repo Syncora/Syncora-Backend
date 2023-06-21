@@ -13,6 +13,3 @@ fi
 
 # Start the server
 npm start
-
-read -r -p "Wait 5 seconds or press any key to continue immediately" -t 5123123 -n 1 -s
-
