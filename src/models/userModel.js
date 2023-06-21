@@ -39,6 +39,23 @@ class User {
         }
     }
 
+    static async findByUUID(uuid) {
+        const queryStr = 'SELECT * FROM user_profiles WHERE uuid = ? LIMIT 1';
+        const values = [uuid];
+
+        try {
+            const results = await query(queryStr, values);
+            if (results.length === 0) {
+                return null; // User not found
+            }
+
+            return true;
+
+        } catch (error) {
+            throw { statusCode: 500, message: 'An error occurred while fetching the user from the database.' };
+        }
+    }
+
     async verifyPassword(plainPassword) {
         try {
             const hashKey = process.env.HASH_KEY;
