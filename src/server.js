@@ -1,4 +1,3 @@
-const http = require('http');
 const socketIO = require('socket.io');
 const socketConfig = require('./config/socketConfig');
 require('dotenv').config();
@@ -6,12 +5,17 @@ require('dotenv').config();
 const app = require('./app');
 
 // Create HTTP server
-const server = http.createServer(app);
+const httpServer = require('http').createServer(app);
 
 // Configure Socket.IO
-const io = socketIO(server);
+const io = socketIO(httpServer);
 socketConfig.configure(io);
 
+// Get app environment status
+const PORT = process.env.APP_ENV === 'production' ? process.env.PROD_PORT : process.env.DEV_PORT;
+
 // Start the server
-const port = process.env.PORT || 8080;
-server.listen(port)
+httpServer.listen(PORT, () => {
+    console.log(`Server running in ${process.env.APP_ENV} mode, listening on *:${PORT}`);
+});
+
