@@ -1,0 +1,28 @@
+@baseUrl = http://localhost:9670
+
+### Create a trivia game
+# @name createTriviaGame
+POST {{baseUrl}}/api/trivia HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMDBkNWZhMi1mNGQ2LTRjMTctYTMxNy0xODE3MmQzODAxNjAiLCJuYW1lIjoiSm9obiBEb2UiLCJhdWQiOiJ1c2VyIiwiaXNzIjoiU3luY29yYSIsImlhdCI6MTY4NzQxOTYyOTg4MywiZXhwIjoxNjg3NDE5NjMzNDgzfQ.D5AdIibVPQGQVo91oDFlP_Ips_A8a2_qxq0oG3zJ5V0
+Content-Type: application/json
+
+{
+    "title": "Movie Trivia",
+    "category": "Entertainment",
+    "questions": [
+        {
+            "id": "question1",
+            "timeLimit": 30,
+            "question": "Who directed the movie 'Inception'?",
+            "options": ["Christopher Nolan", "Martin Scorsese", "Steven Spielberg", "Quentin Tarantino"],
+            "correctAnswer": 0
+        },
+        {
+            "id": "question2",
+            "timeLimit": 25,
+            "question": "Which actor played the character Iron Man in the Marvel Cinematic Universe?",
+            "options": ["Robert Downey Jr.", "Chris Evans", "Chris Hemsworth", "Mark Ruffalo"],
+            "correctAnswer": 0
+        }
+    ]
+}

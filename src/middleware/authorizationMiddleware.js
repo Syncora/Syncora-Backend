@@ -19,10 +19,12 @@ async function authorizationMiddleware(req, res, next) {
     try {
         const decodedToken = await jwtHelper.verifyToken(token);
         req.user = decodedToken;
+
         next();
     } catch (error) {
         res.set('WWW-Authenticate', bearerRealm);
         return res.status(error.statusCode).json({ error: error.message });
     }
-
 };
+
+module.exports = authorizationMiddleware;

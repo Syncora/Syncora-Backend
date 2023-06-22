@@ -9,7 +9,6 @@ if (!secretKey || secretKey === undefined) {
 };
 
 function generateToken(data) {
-
     const tokenOptions = {
         expiresIn: '1h'
     };
