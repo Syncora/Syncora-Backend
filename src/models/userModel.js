@@ -22,11 +22,12 @@ class User {
     }
 
     static async findByUsername(username) {
+        const databaseName = process.env.SQL_CREDENTIALS_DB_NAME;
         const queryStr = 'SELECT * FROM user_profiles WHERE username = ? LIMIT 1';
         const values = [username];
 
         try {
-            const results = await query(queryStr, values);
+            const results = await query(databaseName, queryStr, values);
             if (results.length === 0) {
                 return null; // User not found
             }
@@ -40,11 +41,12 @@ class User {
     }
 
     static async findByUUID(uuid) {
+        const databaseName = process.env.SQL_CREDENTIALS_DB_NAME;
         const queryStr = 'SELECT * FROM user_profiles WHERE uuid = ? LIMIT 1';
         const values = [uuid];
 
         try {
-            const results = await query(queryStr, values);
+            const results = await query(databaseName, queryStr, values);
             if (results.length === 0) {
                 return null; // User not found
             }
@@ -69,11 +71,12 @@ class User {
     }
 
     async register() {
+        const databaseName = process.env.SQL_CREDENTIALS_DB_NAME;
         const queryStr = 'INSERT INTO user_profiles (uuid, type, username, password) VALUES (?, ?, ?, ?)';
         const values = [this.uuid, this.type, this.username, this.password];
 
         try {
-            await query(queryStr, values);
+            await query(databaseName, queryStr, values);
             console.log('User registered successfully');
             return;
         } catch (error) {
