@@ -1,5 +1,7 @@
 const config = require('../config/tokenConfig.json');
 const jwtHelper = require('../utils/jwtHelper');
+const User = require('../models/userModel');
+
 async function authorizationMiddleware(req, res, next) {
     const bearerRealm = `Bearer realm=${config.issuer}`;
     const authorizationHeader = req.headers.authorization;
@@ -18,6 +20,19 @@ async function authorizationMiddleware(req, res, next) {
 
     try {
         const decodedToken = await jwtHelper.verifyToken(token);
+
+        // Check if user uuid exist
+        const userUUIDExist = await User.findByUUID(decodedToken.sub);
+        if (!userUUIDExist) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        // Check if user name exist
+        const userNameExist = await User.findByUsername(decodedToken.name);
+        if (!userNameExist) {
+            return res.status(404).json({ error: 'User not found. ' });
+        }
+
         req.user = decodedToken;
 
         next();
