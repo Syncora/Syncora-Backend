@@ -1,16 +1,27 @@
 class TriviaGame {
     constructor(triviaGameData) {
-        this.id = triviaGameData.id
-        this.author = triviaGameData.author
-        this.title = triviaGameData.title
-        this.category = triviaGameData.category
-        this.questions = triviaGameData.questions.map((questionData) => ({
-            timeLimit: questionData.timeLimit,
-            question: questionData.question,
-            options: questionData.options,
-            correctAnswer: questionData.correctAnswer,
+        this.id = triviaGameData.id;
+        this.author = triviaGameData.author;
+        this.title = triviaGameData.title;
+        this.category = triviaGameData.category;
+        this.questions = this.mapQuestions(triviaGameData.questions);
+    }
+
+    async save() {
+
+    }
+
+    mapQuestions(questions) {
+        return questions.map(({ id, timeLimit, question, options, correctAnswer }) => ({
+            id,
+            timeLimit,
+            question,
+            options,
+            correctAnswer
         }));
     };
-};
+
+
+}
 
 module.exports = TriviaGame;
