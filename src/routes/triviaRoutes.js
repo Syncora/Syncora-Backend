@@ -4,7 +4,6 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
 const TriviaGame = require('../models/triviaGameModel');
-const User = require('../models/userModel');
 
 // POST /api/trivia
 router.post('/', async (req, res) => {
@@ -16,11 +15,6 @@ router.post('/', async (req, res) => {
 
     if (aud !== 'user') {
         return res.status(403).json({ error: 'Access denied. Guests are not allowed to create a trivia game.' });
-    }
-
-    const userExist = await User.findByUUID(sub);
-    if (!userExist) {
-        return res.status(404).json({ error: 'User not found. Cannot create trivia game for user that does not exist.' });
     }
 
     // Generate a unique ID for the trivia game
@@ -39,6 +33,40 @@ router.post('/', async (req, res) => {
         res.status(200).json({ message: 'Trivia game created successfully' });
     } catch (error) {
         res.status(500).json({ error: `Failed to create trivia game: ${error.message}` });
+    }
+});
+
+// GET /api/trivia/games
+router.get('/games', async (req, res) => {
+    /*
+      Get all trivia games associated with the user
+    */
+
+    const { sub } = req.user;
+
+    try {
+        // Fetch all trivia games associated with the user
+        const triviaGames = await TriviaGame.getAllByUserId(sub);
+
+        res.status(200).json(triviaGames);
+    } catch (error) {
+        res.status(500).json({ error: `Failed to fetch trivia games for ${sub}.` });
+    }
+});
+
+// GET /api/trivia/games/all
+router.get('/games/all', async (req, res) => {
+    /*
+        Get all trivia games stored
+    */
+
+    try {
+        // Fetch all trivia games
+        const triviaGames = await TriviaGame.getAll();
+
+        res.status(200).json(triviaGames);
+    } catch (error) {
+        res.status(500).json({ error: `Failed to fetch all trivia games.` });
     }
 });
 
