@@ -4,14 +4,14 @@ const dbPool = require('./connection');
 const createDatabases = async () => {
     try {
         await createDatabase('credentials');
-        console.log('Database(s) now ready');
+        await createDatabase('trivia_games');
     } catch (error) {
         console.error('Error creating databases:', error);
     }
 };
 
 // Helper function to create a database
-const createDatabase = (databaseName) => {
+const createDatabase = async (databaseName) => {
     return new Promise((resolve, reject) => {
         dbPool.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`, (error, results) => {
             if (error) {
@@ -23,5 +23,7 @@ const createDatabase = (databaseName) => {
     });
 };
 
-// Run the setup to create databases
-createDatabases();
+// Wrap the code in an async function and invoke it
+(async () => {
+    await createDatabases();
+})();

@@ -1,8 +1,11 @@
 const dbPool = require('../connection');
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
 
-const createTable = (connection, tableName, tableDefinition) => {
+const createTable = (connection, databaseName, tableName, tableDefinition) => {
     return new Promise((resolve, reject) => {
-        connection.query(`CREATE TABLE IF NOT EXISTS ${tableName} (${tableDefinition})`, (error) => {
+        connection.query(`CREATE TABLE IF NOT EXISTS ${databaseName}.${tableName} (${tableDefinition})`, (error) => {
             if (error) {
                 reject(error);
                 return;
@@ -12,46 +15,19 @@ const createTable = (connection, tableName, tableDefinition) => {
     });
 };
 
-const createTables = (connection) => {
-    const tableDefinitions = [
-        {
-            name: 'guest_profiles',
-            definition: `
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                uuid VARCHAR(36) NOT NULL,
-                type VARCHAR(255) NOT NULL,
-                username VARCHAR(255) NOT NULL UNIQUE
-            `
-        },
-        {
-            name: 'user_profiles',
-            definition: `
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                uuid VARCHAR(36) NOT NULL,
-                type VARCHAR(255) NOT NULL,
-                username VARCHAR(255) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL,
-                createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                avatar VARCHAR(255),
-                ownedTrivias TEXT
-            `
-        }
-    ];
-
+const createTables = (connection, databaseName, tableDefinitions) => {
     // Select the database
-    connection.query('USE credentials', (error) => {
+    connection.query(`USE ${databaseName}`, (error) => {
         if (error) {
             throw error;
         }
 
-        const tablePromises = tableDefinitions.map((table) => {
-            return createTable(connection, table.name, table.definition);
+        const tablePromises = tableDefinitions.map(({ name, definition }) => {
+            return createTable(connection, databaseName, name, definition);
         });
 
         Promise.all(tablePromises)
             .then(() => {
-                console.log(`${tablePromises.length} table(s) now ready`);
                 connection.release();
             })
             .catch((error) => {
@@ -68,5 +44,20 @@ dbPool.getConnection((error, connection) => {
         process.exit(1); // Exit the process with a non-zero status code
     }
 
-    createTables(connection);
+    const databases = [
+        {
+            name: process.env.SQL_CREDENTIALS_DB_NAME,
+            tableDefinitions: getTableDefinitions(process.env.SQL_CREDENTIALS_DB_NAME)
+        }
+    ];
+
+    databases.forEach(({ name, tableDefinitions }) => {
+        createTables(connection, name, tableDefinitions);
+    });
 });
+
+function getTableDefinitions(databaseName) {
+    const definitionFilePath = path.join(__dirname, 'definitions', `${databaseName}.js`);
+    const tableDefinitions = require(definitionFilePath);
+    return tableDefinitions;
+}

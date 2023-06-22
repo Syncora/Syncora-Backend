@@ -7,9 +7,12 @@ const userRoutes = require('./routes/userRoutes');
 
 const authorizationMiddleware = require('./middleware/authorizationMiddleware');
 
-require('./database/connection.js');
-require('./database/setup.js');
-require('./database/tables/setup.js');
+// Setup connection, databases and tables on MySQL
+(async () => {
+    await require('./database/connection.js');
+    await require('./database/setup.js');
+    await require('./database/tables/setup.js');
+})();
 
 var corsOptions = {
     origin: '*',
