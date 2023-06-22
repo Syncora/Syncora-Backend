@@ -1,14 +1,15 @@
 class TriviaGame {
     constructor(triviaGameData) {
         this.id = triviaGameData.id
+        this.author = triviaGameData.author
         this.title = triviaGameData.title
         this.category = triviaGameData.category
-        this.questions = {
-            timeLimit: triviaGameData.timeLimit,
-            question: triviaGameData.question,
-            options: triviaGameData.options,
-            correctAnswer: triviaGameData.correctAnswer
-        };
+        this.questions = triviaGameData.questions.map((questionData) => ({
+            timeLimit: questionData.timeLimit,
+            question: questionData.question,
+            options: questionData.options,
+            correctAnswer: questionData.correctAnswer,
+        }));
     };
 };
 
