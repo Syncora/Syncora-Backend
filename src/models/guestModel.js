@@ -8,11 +8,12 @@ class Guest {
     }
 
     async register() {
+        const databaseName = process.env.SQL_CREDENTIALS_DB_NAME;
         const queryStr = 'INSERT INTO guest_profiles (uuid, type, username) VALUES (?, ?, ?)';
         const values = [this.uuid, this.type, this.username];
 
         try {
-            await query(queryStr, values);
+            await query(databaseName, queryStr, values);
             console.log('Guest registered successfully');
             return;
         } catch (error) {
