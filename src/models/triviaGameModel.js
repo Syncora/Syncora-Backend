@@ -66,8 +66,6 @@ class TriviaGame {
 
         try {
             await query(databaseName, queryStr, values);
-
-            console.log('Trivia game saved successfully');
         } catch (error) {
             throw { statusCode: 500, message: 'Failed to save trivia game.' };
         }
