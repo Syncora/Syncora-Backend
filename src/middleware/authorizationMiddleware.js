@@ -1,9 +1,9 @@
-const config = require('../config/tokenConfig.json');
+const tokenConfig = require('../config/tokenConfig.json');
 const jwtHelper = require('../utils/jwtHelper');
 const User = require('../models/userModel');
 
 async function authorizationMiddleware(req, res, next) {
-    const bearerRealm = `Bearer realm=${config.issuer}`;
+    const bearerRealm = `Bearer realm=${tokenConfig.issuer}`;
     const authorizationHeader = req.headers.authorization;
 
     if (!authorizationHeader) {
