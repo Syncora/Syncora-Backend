@@ -8,8 +8,8 @@ module.exports = [
       game_title VARCHAR(255) NOT NULL,
       category VARCHAR(255) NOT NULL,
       questions JSON NOT NULL,
-      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES credentials.user_profiles(uuid)
     `
   }
