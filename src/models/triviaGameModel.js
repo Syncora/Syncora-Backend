@@ -46,6 +46,19 @@ class TriviaGame {
         }
     }
 
+    static async deleteTriviaGame(game_id) {
+        const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
+        const queryStr = 'DELETE FROM game_data WHERE game_id = ? LIMIT 1';
+        const values = [game_id];
+
+        try {
+            const result = await query(databaseName, queryStr, values);
+            return result;
+        } catch (error) {
+            throw { statusCode: 500, message: 'Failed to delete a trivia game.' };
+        }
+    }
+
     async save() {
         const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
         const queryStr = 'INSERT INTO game_data (game_id, user_id, game_title, category, questions) VALUES (?, ?, ?, ?, ?)';
