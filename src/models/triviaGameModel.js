@@ -11,7 +11,7 @@ class TriviaGame {
 
     static async getAllByUserId(userId) {
         const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
-        const queryStr = 'SELECT * FROM game_data WHERE user_id = ?';
+        const queryStr = 'SELECT game_id, user_id, created_at, game_title, category, JSON_LENGTH(questions) AS num_questions FROM game_data WHERE user_id = ?';
         const values = [userId];
 
         try {
@@ -24,7 +24,7 @@ class TriviaGame {
 
     static async getAll() {
         const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
-        const queryStr = 'SELECT * FROM game_data';
+        const queryStr = 'SELECT game_id, user_id, created_at, game_title, category, JSON_LENGTH(questions) AS num_questions FROM game_data';
 
         try {
             const results = await query(databaseName, queryStr);
