@@ -18,7 +18,6 @@ function generateToken(data) {
         iat: Date.now(),
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
     };
-    console.log(tokenPayload, secretKey)
 
     return jwt.sign(tokenPayload, secretKey);
 };
