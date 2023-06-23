@@ -49,12 +49,12 @@ router.get('/games', async (req, res) => {
         return res.status(400).json({ error: 'Invalid query type parameters.' });
     }
 
-    try {
-        const options = {
+    const options = {
             ownedGames,
             limit: parseInt(limit) || null
         }
 
+    try {
         // Fetch all trivia games associated with the user
         const triviaGames = await TriviaGame.getTriviaGames(sub, options);
 
