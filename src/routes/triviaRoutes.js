@@ -36,37 +36,27 @@ router.post('/', async (req, res) => {
     }
 });
 
-// GET /api/trivia/games
+// GET /api/trivia/games?ownedGames=false&limit=20
 router.get('/games', async (req, res) => {
     /*
       Get all trivia games associated with the user
     */
-
     const { sub } = req.user;
+    const { ownedGames, limit } = req.query;
 
     try {
+        const options = {
+            ownedGames: Boolean(ownedGames),
+            limit: parseInt(limit) || null
+        }
+
         // Fetch all trivia games associated with the user
-        const triviaGames = await TriviaGame.getAllByUserId(sub);
+        const triviaGames = await TriviaGame.getTriviaGames(sub, options);
 
         res.status(200).json(triviaGames);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: `Failed to fetch trivia games for ${sub}.` });
-    }
-});
-
-// GET /api/trivia/games/all
-router.get('/games/all', async (req, res) => {
-    /*
-        Get all trivia games stored
-    */
-
-    try {
-        // Fetch all trivia games
-        const triviaGames = await TriviaGame.getAll();
-
-        res.status(200).json(triviaGames);
-    } catch (error) {
-        res.status(500).json({ error: `Failed to fetch all trivia games.` });
     }
 });
 
