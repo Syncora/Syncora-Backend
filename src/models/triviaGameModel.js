@@ -29,10 +29,22 @@ class TriviaGame {
             const results = await query(databaseName, queryStr, values);
             return results;
         } catch (error) {
-            throw new Error(`Failed to retrieve trivia games for user: ${error.message}`);
+            throw { statusCode: 500, message: 'Failed to retrieve trivia games.' };
         }
     }
 
+    static async getTriviaGame(game_id) {
+        const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
+        const queryStr = 'SELECT * from game_data WHERE game_id = ? LIMIT 1';
+        const values = [game_id];
+
+        try {
+            const result = await query(databaseName, queryStr, values);
+            return result;
+        } catch (error) {
+            throw { statusCode: 500, message: 'Failed to retrieve trivia game details.' };
+        }
+    }
 
     async save() {
         const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
@@ -44,11 +56,9 @@ class TriviaGame {
 
             console.log('Trivia game saved successfully');
         } catch (error) {
-            throw new Error(`Failed to save trivia game: ${error.message}`);
+            throw { statusCode: 500, message: 'Failed to save trivia game.' };
         }
     }
-
-
 
     mapQuestions(questions) {
         return questions.map(({ id, timeLimit, question, options, correctAnswer }) => ({
@@ -59,7 +69,6 @@ class TriviaGame {
             correctAnswer
         }));
     };
-
 
 }
 
