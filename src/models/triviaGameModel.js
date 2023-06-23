@@ -9,25 +9,24 @@ class TriviaGame {
         this.questions = this.mapQuestions(triviaGameData.questions);
     }
 
-    static async getAllByUserId(userId) {
+    static async getTriviaGames(userId, options) {
+        const { ownedGames, limit } = options;
         const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
-        const queryStr = 'SELECT game_id, user_id, created_at, game_title, category, JSON_LENGTH(questions) AS num_questions FROM game_data WHERE user_id = ?';
-        const values = [userId];
+        let queryStr = 'SELECT game_id, user_id, created_at, game_title, category, JSON_LENGTH(questions) AS num_questions FROM game_data';
+        let values = [];
+
+        if (ownedGames) {
+            queryStr += ' WHERE user_id = ?';
+            values.push(userId);
+        }
+
+        if (limit) {
+            queryStr += ' LIMIT ?';
+            values.push(limit);
+        }
 
         try {
             const results = await query(databaseName, queryStr, values);
-            return results;
-        } catch (error) {
-            throw new Error(`Failed to retrieve trivia games for user: ${error.message}`);
-        }
-    }
-
-    static async getAll() {
-        const databaseName = process.env.SQL_TRIVIA_GAMES_DB_NAME;
-        const queryStr = 'SELECT game_id, user_id, created_at, game_title, category, JSON_LENGTH(questions) AS num_questions FROM game_data';
-
-        try {
-            const results = await query(databaseName, queryStr);
             return results;
         } catch (error) {
             throw new Error(`Failed to retrieve trivia games for user: ${error.message}`);
