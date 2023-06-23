@@ -4,6 +4,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
 const TriviaGame = require('../models/triviaGameModel');
+const { isBooleanString, isValidInteger } = require('../utils/validationHelper');
 
 // POST /api/trivia
 router.post('/', async (req, res) => {
@@ -44,9 +45,13 @@ router.get('/games', async (req, res) => {
     const { sub } = req.user;
     const { ownedGames, limit } = req.query;
 
+    if (!isBooleanString(ownedGames) || !isValidInteger(limit)) {
+        return res.status(400).json({ error: 'Invalid query type parameters.' });
+    }
+
     try {
         const options = {
-            ownedGames: Boolean(ownedGames),
+            ownedGames,
             limit: parseInt(limit) || null
         }
 
