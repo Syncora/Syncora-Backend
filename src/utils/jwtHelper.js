@@ -9,9 +9,6 @@ if (!secretKey || secretKey === undefined) {
 };
 
 function generateToken(data) {
-    const tokenOptions = {
-        expiresIn: '1h'
-    };
 
     const tokenPayload = {
         sub: data.uuid,
@@ -19,9 +16,10 @@ function generateToken(data) {
         aud: data.type,
         iss: config.issuer,
         iat: Date.now(),
+        exp: Math.floor(Date.now() / 1000) + (60 * 60),
     };
 
-    return jwt.sign(tokenPayload, secretKey, tokenOptions);
+    return jwt.sign(tokenPayload, secretKey);
 };
 
 async function verifyToken(token) {

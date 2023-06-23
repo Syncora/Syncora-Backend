@@ -1,5 +1,4 @@
 const dbPool = require('../connection');
-const fs = require('fs');
 const path = require('path');
 
 const createTable = (connection, databaseName, tableName, tableDefinition) => {
@@ -27,6 +26,7 @@ const createTables = async (connection, databases) => {
             connection.release();
         }
     }
+    connection.release();
 };
 
 const databases = [

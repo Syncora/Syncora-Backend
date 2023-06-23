@@ -8,9 +8,11 @@ function query(databaseName, query, values) {
         pool.query(query, values, (error, results) => {
             if (error) {
                 reject(error);
+                pool.end()
                 return;
             }
             resolve(results);
+            pool.end()
         });
     });
 }
