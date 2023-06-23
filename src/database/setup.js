@@ -8,7 +8,7 @@ const createDatabases = async () => {
     } catch (error) {
 
         if (error.code == 'ECONNREFUSED') {
-            console.error('Error: Failed to connect to the MySQL database. Please ensure that the MySQL server is running and accessible.');
+            console.error('Failed to connect to the MySQL database. Please ensure that the MySQL server is running and accessible.');
             return;
         }
         console.error('Error creating databases:', error);
