@@ -6,8 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 const TriviaGame = require('../models/triviaGameModel');
 const { isBooleanString, isValidInteger, isListEmpty } = require('../utils/validationHelper');
 
-// POST /api/trivia
-router.post('/', async (req, res) => {
+// POST /api/trivia/game
+router.post('/game', async (req, res) => {
     /* 
       Create a new trivia game
     */
@@ -31,9 +31,9 @@ router.post('/', async (req, res) => {
         // Save the triviaGame instance
         await triviaGame.save();
 
-        res.status(200).json({ message: 'Trivia game created successfully' });
+        res.status(201).json({ message: `The trivia game (${triviaGame.id}) has been created successfully.` });
     } catch (error) {
-        res.status(500).json({ error: `Failed to create trivia game: ${error.message}` });
+        res.status(500).json({ error: `Failed to create trivia game: ${error.message}.` });
     }
 });
 
@@ -84,6 +84,24 @@ router.get('/games/:id', async (req, res) => {
         res.status(200).json(triviaGame);
     } catch (error) {
         res.status(500).json({ error: `Failed to fetch trivia game (${game_id}).` });
+    }
+});
+
+// DELETE /api/trivia/games/:id
+router.delete('/games/:id', async (req, res) => {
+    /*
+      Delete a trivia game associated with a game id.
+    */
+
+    const game_id = req.params.id;
+
+    try {
+        // Delete trivia game
+        await TriviaGame.deleteTriviaGame(game_id);
+
+        res.status(201).json({ message: `The trivia game (${game_id}) deleted successfully.` });
+    } catch (error) {
+        res.status(500).json({ error: `Failed to delete trivia game (${game_id}).` });
     }
 });
 
