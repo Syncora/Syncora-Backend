@@ -92,10 +92,18 @@ router.delete('/games/:id', async (req, res) => {
     /*
       Delete a trivia game associated with a game id.
     */
-
+    const { sub } = req.user;
     const game_id = req.params.id;
 
     try {
+        // Fetch trivia game associated with a game id
+        const triviaGame = await TriviaGame.getTriviaGame(game_id);
+
+        // Check if sub is not an author of the trivia game
+        if (triviaGame[0].user_id !== sub) {
+            return res.status(403).json({ error: 'Access denied. You do not have permission to delete this trivia game. Only the author can delete it.' });
+        }
+
         // Delete trivia game
         await TriviaGame.deleteTriviaGame(game_id);
 
