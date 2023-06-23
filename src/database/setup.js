@@ -6,6 +6,11 @@ const createDatabases = async () => {
         await createDatabase('credentials');
         await createDatabase('trivia_games');
     } catch (error) {
+
+        if (error.code == 'ECONNREFUSED') {
+            console.error('Error: Failed to connect to the MySQL database. Please ensure that the MySQL server is running and accessible.');
+            return;
+        }
         console.error('Error creating databases:', error);
     }
 };
