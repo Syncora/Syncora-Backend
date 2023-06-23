@@ -6,7 +6,12 @@ function isValidInteger(value) {
     return Number.isInteger(parseInt(value));
 }
 
+function isListEmpty(list) {
+    return true ? list.length === 0 : false;
+}
+
 module.exports = {
     isBooleanString,
-    isValidInteger
+    isValidInteger,
+    isListEmpty
 };
