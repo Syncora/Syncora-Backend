@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 
 const triviaRoutes = require('./routes/triviaRoutes');
+const triviaSessionRoutes = require('./routes/triviaSessionRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 const authorizationMiddleware = require('./middleware/authorizationMiddleware');
@@ -26,6 +27,7 @@ app.use('/api/trivia', authorizationMiddleware);
 
 // Routes
 app.use('/api/trivia', triviaRoutes);
+app.use('/api/trivia', triviaSessionRoutes);
 app.use('/api/user', userRoutes);
 
 module.exports = app;
