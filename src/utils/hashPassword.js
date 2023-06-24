@@ -15,7 +15,7 @@ async function hashPassword(password) {
 
         return hashedPassword;
     } catch (error) {
-        throw { statusCode: 500, message: 'An error occurred while hashing the password.' };
+        return false;
     }
 }
 
