@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const secretKey = process.env.JWT_KEY;
 
 const config = require('../config/tokenConfig.json')
-const User = require('../models/userModel');
+const User = require('../models/user');
 
 if (!secretKey || secretKey === undefined) {
     throw new Error('JWT secret key not found!');
