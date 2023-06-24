@@ -29,7 +29,7 @@ class TriviaGame {
             const results = await query(databaseName, queryStr, values);
             return results;
         } catch (error) {
-            throw { statusCode: 500, message: 'Failed to retrieve trivia games.' };
+            return false;
         }
     }
 
@@ -42,7 +42,7 @@ class TriviaGame {
             const result = await query(databaseName, queryStr, values);
             return result;
         } catch (error) {
-            throw { statusCode: 500, message: 'Failed to retrieve trivia game details.' };
+            return false;
         }
     }
 
@@ -55,7 +55,7 @@ class TriviaGame {
             const result = await query(databaseName, queryStr, values);
             return result;
         } catch (error) {
-            throw { statusCode: 500, message: 'Failed to delete a trivia game.' };
+            return false;
         }
     }
 
@@ -67,7 +67,7 @@ class TriviaGame {
         try {
             await query(databaseName, queryStr, values);
         } catch (error) {
-            throw { statusCode: 500, message: 'Failed to save trivia game.' };
+            return false;
         }
     }
 

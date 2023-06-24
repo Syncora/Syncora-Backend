@@ -1,13 +1,13 @@
 class Player {
-    constructor(playerData) {
+    constructor(id, name, type, host) {
         /*
         TODO
             - Allow the use of a display name instead of username        
         */
-        this.id = playerData.id
-        this.name = playerData.name
-        this.type = playerData.type
-        this.host = playerData.host
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.host = host;
 
         this.score = 0
     }

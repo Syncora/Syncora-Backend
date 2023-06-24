@@ -11,14 +11,18 @@ class User {
 
     static async validateUsernameInput(username) {
         if (!username || username.length < 2) {
-            throw { statusCode: 500, message: 'Invalid username. Username must be at least 2 characters long.' };
+            return false;
         }
+
+        return true;
     }
 
     static async validatePasswordInput(password) {
         if (!password) {
-            throw { statusCode: 500, message: 'Invalid password. Password must not be undefined.' };
+            return false;
         }
+
+        return true;
     }
 
     static async findByUsername(username) {
@@ -36,7 +40,7 @@ class User {
             return new User(userData);
 
         } catch (error) {
-            throw { statusCode: 500, message: 'An error occurred while fetching the user from the database.' };
+            return false;
         }
     }
 
@@ -51,10 +55,11 @@ class User {
                 return null; // User not found
             }
 
-            return true;
+            const userData = results[0];
+            return new User(userData);
 
         } catch (error) {
-            throw { statusCode: 500, message: 'An error occurred while fetching the user from the database.' };
+            return false;
         }
     }
 
@@ -66,7 +71,7 @@ class User {
             return await bcrypt.compare(stringToBeHashed, this.password);
 
         } catch (error) {
-            throw { statusCode: 500, message: 'An error occurred while verifying the password.' };
+            return false;
         }
     }
 
@@ -77,14 +82,10 @@ class User {
 
         try {
             await query(databaseName, queryStr, values);
-            console.log('User registered successfully');
-            return;
+
+            return true;
         } catch (error) {
-            if (error.code === 'ER_DUP_ENTRY') {
-                throw { statusCode: 409, message: error.sqlMessage };
-            } else {
-                throw { statusCode: 500, message: error.sqlMessage };
-            }
+            return false;
         }
     }
 }

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { v4: uuidv4 } = require('uuid');
 
-const TriviaGame = require('../models/triviaGameModel');
+const TriviaGame = require('../models/triviaGame');
 const { isBooleanString, isValidInteger, isListEmpty } = require('../utils/validationHelper');
 
 // POST /api/trivia/game
@@ -27,14 +27,13 @@ router.post('/game', async (req, res) => {
     // Create a new instance of the TriviaGame class
     const triviaGame = new TriviaGame({ id, author: sub, title, category, questions });
 
-    try {
-        // Save the triviaGame instance
-        await triviaGame.save();
-
-        res.status(201).json({ message: `The trivia game (${triviaGame.id}) has been created successfully.` });
-    } catch (error) {
-        res.status(500).json({ error: `Failed to create trivia game: ${error.message}.` });
+    // Save the triviaGame instance
+    const saved = await triviaGame.save();
+    if (!saved) {
+        return res.status(500).json({ message: `Failed to save trivia game (${triviaGame.id}). ` });
     }
+
+    res.status(201).json({ message: `The trivia game (${triviaGame.id}) has been created successfully.` });
 });
 
 // GET /api/trivia/games?ownedGames=false&limit=20
@@ -50,18 +49,17 @@ router.get('/games', async (req, res) => {
     }
 
     const options = {
-            ownedGames,
-            limit: parseInt(limit) || null
-        }
-
-    try {
-        // Fetch all trivia games associated with the user
-        const triviaGames = await TriviaGame.getTriviaGames(sub, options);
-
-        res.status(200).json(triviaGames);
-    } catch (error) {
-        res.status(500).json({ error: `Failed to fetch trivia games for ${sub}.` });
+        ownedGames,
+        limit: parseInt(limit) || null
     }
+
+    // Fetch all trivia games associated with the user
+    const triviaGames = await TriviaGame.getTriviaGames(sub, options);
+    if (!triviaGames) {
+        return res.status(500).json({ error: `Failed to retrieve trivia games.` });
+    }
+
+    res.status(200).json(triviaGames);
 });
 
 
@@ -71,20 +69,19 @@ router.get('/games/:id', async (req, res) => {
       Get a trivia game associated with a game id. This returns everything a tivia game has, including questions. Other endpoints, doesnt do this.
     */
 
-    const game_id = req.params.id;
+    const gameId = req.params.id;
 
-    try {
-        // Fetch trivia game associated with a game id
-        const triviaGame = await TriviaGame.getTriviaGame(game_id);
-
-        if (isListEmpty(triviaGame)) {
-            return res.status(404).json({ error: `Not Found. Trivia Game (${game_id}) does not exist.` });
-        }
-
-        res.status(200).json(triviaGame);
-    } catch (error) {
-        res.status(500).json({ error: `Failed to fetch trivia game (${game_id}).` });
+    // Fetch trivia game associated with a game id
+    const triviaGame = await TriviaGame.getTriviaGame(gameId);
+    if (!triviaGame) {
+        return res.status(500).json({ error: `Failed to retrieve trivia game (${gameId}).` });
     }
+
+    if (isListEmpty(triviaGame)) {
+        return res.status(404).json({ error: `Not Found. Trivia Game (${gameId}) does not exist.` });
+    }
+
+    res.status(200).json(triviaGame);
 });
 
 // DELETE /api/trivia/games/:id
@@ -93,24 +90,26 @@ router.delete('/games/:id', async (req, res) => {
       Delete a trivia game associated with a game id.
     */
     const { sub } = req.user;
-    const game_id = req.params.id;
+    const gameId = req.params.id;
 
-    try {
-        // Fetch trivia game associated with a game id
-        const triviaGame = await TriviaGame.getTriviaGame(game_id);
-
-        // Check if sub is not an author of the trivia game
-        if (triviaGame[0].user_id !== sub) {
-            return res.status(403).json({ error: 'Access denied. You do not have permission to delete this trivia game. Only the author can delete it.' });
-        }
-
-        // Delete trivia game
-        await TriviaGame.deleteTriviaGame(game_id);
-
-        res.status(201).json({ message: `The trivia game (${game_id}) deleted successfully.` });
-    } catch (error) {
-        res.status(500).json({ error: `Failed to delete trivia game (${game_id}).` });
+    // Fetch trivia game associated with a game id
+    const triviaGame = await TriviaGame.getTriviaGame(gameId);
+    if (!triviaGame) {
+        return res.status(500).json({ error: `Failed to retrieve trivia game (${gameId}).` });
     }
+
+    // Check if sub is not an author of the trivia game
+    if (triviaGame[0].user_id !== sub) {
+        return res.status(403).json({ error: 'Access denied. You do not have permission to delete this trivia game. Only the author can delete it.' });
+    }
+
+    // Delete trivia game
+    const deleted = await TriviaGame.deleteTriviaGame(gameId);
+    if (!deleted) {
+        return res.status(500).json({ error: `Failed to delete trivia game (${gameId}).` });
+    }
+
+    res.status(201).json({ message: `The trivia game (${gameId}) deleted successfully.` });
 });
 
 module.exports = router;
