@@ -1,5 +1,26 @@
 # Syncora-Backend
+## Getting started
+To get started with the Syncora-Backend, you need to have Node.js installed. You can download Node.js from the official website or click [here](https://nodejs.org/).
 
+Once you have Node.js installed, you can clone this repository:
+```
+git clone https://github.com/Syncora/Syncora-Backend
+cd syncora-backend
+```
+
+### Setting up MySQL database
+
+1. **Install MySQL**
+
+   Make sure you have MySQL installed on your machine. If not, you can download and install it from the official MySQL website or click [here](https://dev.mysql.com/downloads/).
+
+2. **Run the setup.shell file**
+3. **Update the .env file**
+Open the `.env` file in a text editor and replace the values for `SQL_USERNAME` and `SQL_PASSWORD` with the appropriate MySQL credentials you created earlier when installing mysql.
+
+
+
+# Dev
 ## Technologies Used
 
 - Node.js: JavaScript runtime environment
